@@ -139,24 +139,24 @@ TTreeNode *makeNewNode(char *name, char *phoneNum) {
 // Note that "root" is a POINTER to the tree's root,
 // not the root itself.
 
-void addNode(TTreeNode **root, TTreeNode *node) {
+void addNode(TTreeNode **root, TTreeNode *newNode) {
     if (*root == NULL) {
-        *root = node;
+        *root = newNode;
     } else {
         TTreeNode *curr = *root;
         while (1) {
-            int cmp = strcmp(node->name, curr->name);
+            int cmp = strcmp(newNode->name, curr->name);
 
             if (cmp < 0) {
                 if (curr->left == NULL) { 
-                    curr->left = node;
+                    curr->left = newNode;
                     break; 
                 } else {
                     curr = curr->left;
                 }
             } else {
                 if (curr->right == NULL) {
-                    curr->right = node;
+                    curr->right = newNode;
                     break;
                 } else {
                     curr = curr->right;

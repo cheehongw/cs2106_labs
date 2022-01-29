@@ -9,6 +9,7 @@ typedef struct {
 
 TPerson *makeNewNode(char *name, int age) {
     TPerson *p = (TPerson *) malloc(sizeof(TPerson));
+    p->name = (char *) malloc(strlen(name) + 1);
     strcpy(p->name, name);
     p->age = age;
 
@@ -16,6 +17,8 @@ TPerson *makeNewNode(char *name, int age) {
 }
 
 void freeNode(TPerson *node) {
+    char *nameptr = (*node).name;
+    free(nameptr);
     free(node);
 }
 

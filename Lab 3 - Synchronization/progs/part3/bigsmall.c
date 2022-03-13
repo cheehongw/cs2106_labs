@@ -36,6 +36,6 @@ int main() {
     printf("\nNumber of items: %d\n", VECT_SIZE);
     printf("Smallest element is %d\n", smallest);
     printf("Largest element is %d\n", largest);
-    printf("Time taken is %3.2f seconds\n\n", time_taken);
+    printf("Time taken is %3.20f seconds\n\n", time_taken);
 }
 

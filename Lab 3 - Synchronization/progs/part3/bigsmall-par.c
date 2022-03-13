@@ -4,15 +4,17 @@
 #include <unistd.h>
 #include <time.h>
 #include <sys/wait.h>
+#include <sys/shm.h>
 #include "config.h"
+#include "barrier.h"
 
 #define NUM_PROCESSES  8
 
 int main() {
 
     int vect[VECT_SIZE];
-    int pid;
-    int largest[NUM_PROCESSES], smallest[NUM_PROCESSES];
+    int pid, shmid_largest, shmid_smallest;
+    int *largest, *smallest;
 
     float per_process_raw = (float) VECT_SIZE / NUM_PROCESSES;
     int per_process = (int) per_process_raw;
@@ -28,11 +30,18 @@ int main() {
     srand(24601);
     int i;
 
-    for(i=0; i<VECT_SIZE; i++) {
+    for(i=0; i<VECT_SIZE; i++) {   //generate random numbers
         vect[i] = rand();
-    }
+    } 
 
-    for(i=0; i<NUM_PROCESSES; i++) {
+    shmid_largest = shmget(IPC_PRIVATE, sizeof(int) * NUM_PROCESSES, IPC_CREAT | 0600);
+    shmid_smallest = shmget(IPC_PRIVATE, sizeof(int) * NUM_PROCESSES, IPC_CREAT | 0600);
+    largest = shmat(shmid_largest, NULL, 0);
+    smallest = shmat(shmid_smallest, NULL, 0);
+
+    init_barrier(NUM_PROCESSES + 1);
+
+    for(i=0; i<NUM_PROCESSES; i++) {  //generate child processes
         pid = fork();
 
         if(pid == 0)
@@ -43,10 +52,12 @@ int main() {
     int big = -INT_MAX;
     int small = INT_MAX;
 
+    start = clock();
+
 
     if(pid == 0) {
-        int start = i * per_process;
-        int end = i * per_process + per_process;
+        int start = i * per_process;            //define search start
+        int end = i * per_process + per_process;   //define search end
 
         for(j=start; j<end; j++){
             if(vect[j] > big)
@@ -58,10 +69,13 @@ int main() {
         largest[i] = big;
         smallest[i] = small;
 
+        reach_barrier();
+        shmdt(largest); shmdt(smallest);
     }
     else 
     {
         start = clock();
+        reach_barrier();
         for(j=0; j<NUM_PROCESSES; j++)
         {
             if(largest[j] > big)
@@ -76,11 +90,14 @@ int main() {
         printf("\nNumber of items: %d\n", VECT_SIZE);
         printf("Smallest element is %d\n", small);
         printf("Largest element is %d\n", big);
-        printf("Time taken is %3.2fs\n\n", time_taken);
+        printf("Time taken is %3.20fs\n\n", time_taken);
 
         // Clean up process table
         for(j=0; j<NUM_PROCESSES; j++)
             wait(NULL);
+            destroy_barrier(pid);
+            shmdt(largest); shmdt(smallest);
+            shmctl(shmid_largest, IPC_RMID, 0); shmctl(shmid_smallest, IPC_RMID, 0);
     }
 }
 

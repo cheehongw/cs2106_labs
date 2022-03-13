@@ -13,6 +13,7 @@ int main() {
     int* turn;
 
     shmid = shmget(IPC_PRIVATE, sizeof(int), IPC_CREAT | 0600); //110 -> read and write bits set
+    turn = shmat(shmid, NULL, 0); //get pointer to shared memory
     
     turn[0] = 0;
 
@@ -38,14 +39,14 @@ int main() {
         printf("\n\n");
 
         turn[0] += 1; //signal change in turn
-        shmdt((int*) turn); //detach shared mem
+        shmdt((void*) turn); //detach shared mem
 
     }
     else {
         for(i=0; i<NUM_PROCESSES; i++) 
             wait(NULL);
             //parent detach and destroys shared mem after children are all done.
-            shmdt((int*) turn);
+            shmdt((void*) turn);
             shmctl(shmid, IPC_RMID, 0);
     }
 

@@ -37,10 +37,13 @@ int main() {
         printf("\n\n");
 
         if (i != NUM_PROCESSES - 1) sem_post(&sem[i + 1]);
+        shmdt((void*) sem);
     }
     else {
         for(i=0; i<NUM_PROCESSES; i++) 
             wait(NULL);
+            shmdt(sem);
+            shmctl(shmid, IPC_RMID, 0);
     }
 
 }

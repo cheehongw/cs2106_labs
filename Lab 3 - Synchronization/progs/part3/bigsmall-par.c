@@ -70,7 +70,7 @@ int main() {
         smallest[i] = small;
 
         reach_barrier();
-        shmdt(largest); shmdt(smallest);
+
     }
     else 
     {

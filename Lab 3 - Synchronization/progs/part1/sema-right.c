@@ -24,7 +24,6 @@ int main() {
         sem_post(sem);
         wait(NULL);
         sem_destroy(sem);
-
         shmdt((void*) sem);
         shmctl(shmid, IPC_RMID, 0);
     }
@@ -32,7 +31,7 @@ int main() {
     {
         sem_wait(sem);
         printf("Child! Waited 1 second for parent.\n");
-        shmdt((void*) sem);
+
     }
 }
 

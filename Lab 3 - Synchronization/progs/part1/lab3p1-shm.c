@@ -39,7 +39,6 @@ int main() {
         printf("\n\n");
 
         turn[0] += 1; //signal change in turn
-        shmdt((void*) turn); //detach shared mem
 
     }
     else {

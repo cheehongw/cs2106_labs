@@ -38,6 +38,28 @@ void print_map(unsigned char *map, int len) {
 // Returns: Index to stretch of 0's of required length, -1 if no such stretch can be found
 
 long search_map(unsigned char *bitmap, int len, long num_zeroes) {
+    long i = 0;
+
+    unsigned char mask = 0b10000000;
+    long consec_zero_count = 0;
+
+    for (i = 0; i < (len * 8); i++) {
+        if (consec_zero_count == num_zeroes) {
+            // printf("found it: index %ld \n", i);
+            return i - consec_zero_count;
+        }
+
+        if (bitmap[i / 8] & mask) {
+            consec_zero_count = 0;
+        } else {
+            // printf("loop\n");
+            consec_zero_count += 1;
+        }
+        mask = mask >> 1;
+        if (!mask) mask = 0b10000000;
+
+    }
+
     return -1;
 } //main
 
@@ -50,6 +72,30 @@ long search_map(unsigned char *bitmap, int len, long num_zeroes) {
 // Returns: Nothing
 
 void set_map(unsigned char *map, long start, long length, int value) {
+
+    int i;
+    unsigned char mask = 0b10000000;
+    int offset_start_bit = start % 8;
+
+    mask = mask >> offset_start_bit;
+
+
+    for (int i = start; i < start + length; i++) {
+        int curr_idx = i / 8;
+        //printf("%d\n", curr_idx);
+        if (map[curr_idx] & mask) { // current bit is 1
+            if (value == 0) {
+                map[curr_idx] = map[curr_idx] ^ mask; 
+            }
+        } else { //current bit is 0
+            if (value == 1) {
+                map[curr_idx] = map[curr_idx] | mask; 
+            }
+        }
+        mask = mask >> 1;
+        if (!mask) mask = 0b10000000;
+    }
+
 }
 
 // IMPLEMENTED FOR YOU

@@ -28,7 +28,13 @@ void *mymalloc(size_t size) {
     TNode *node;
     TData *data;
 
-    long start = search_map(_bitmap, map_size, size);
+    long start = search_map(_bitmap, map_size, size); // handle case where allocation fail
+    
+    if (start == -1) {
+        return NULL;
+    }
+    
+
     allocate_map(_bitmap, start, size);
 
     data = (TData *) malloc(sizeof(TData));
@@ -42,8 +48,15 @@ void *mymalloc(size_t size) {
 // Frees memory pointer to by ptr.
 void myfree(void *ptr) {
     int start_idx = ((char*) ptr - _heap) / sizeof(char);
+
     TNode *node = find_node(linked_list, start_idx);
-    
+
+    if (node == NULL) { //cannot find pointer information
+        return;
+    }
+
+    int length = node->pdata->len;
+    delete_node(&linked_list, node);
 
     free_map(_bitmap, start_idx, length);
 }

@@ -56,7 +56,9 @@ void myfree(void *ptr) {
     }
 
     int length = node->pdata->len;
+    TData *data = node->pdata;
     delete_node(&linked_list, node);
+    free(data);
 
     free_map(_bitmap, start_idx, length);
 }

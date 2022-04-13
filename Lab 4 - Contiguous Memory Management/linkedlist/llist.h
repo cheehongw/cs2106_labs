@@ -14,6 +14,8 @@ void dbprintf(char *format, ...);
 
 typedef struct td {
     int val;
+    //0 for empty, 1 for full
+    int status;
 } TData;
 
 

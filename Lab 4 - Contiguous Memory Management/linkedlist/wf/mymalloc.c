@@ -129,13 +129,13 @@ void myfree(void *ptr) {
 
     if (next != NULL && next->pdata->status == 0) {
         targetData->val = (targetData->val) + (next->pdata->val);
-        free(next->pdata); //not necessary?
+        free(next->pdata);
         merge_node(_memlist, targetNode, SUCCEEDING);
     }
 
     if (prev != NULL && prev->pdata->status == 0) {
         prev->pdata->val = (prev->pdata->val) + (targetData->val);
-        free(targetData); //not necessary?
+        free(targetData);
         merge_node(_memlist, targetNode, PRECEDING);
     }
 

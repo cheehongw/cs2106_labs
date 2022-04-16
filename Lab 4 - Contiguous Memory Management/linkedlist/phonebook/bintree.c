@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "bintree.h"
+#include "mymalloc.h"
 
 /* ------------------------- DO NOT IMPLEMENT THESE ----------------------
 
@@ -126,8 +127,8 @@ void delTree(TTreeNode *root) {
 TTreeNode *makeNewNode(char *name, char *phoneNum) {
     // Implement makeNewNode to create a new
     // TTreeNode containing name and phoneNum
-    TTreeNode *node_ptr = (TTreeNode *) malloc(sizeof(TTreeNode));
-    node_ptr->name = (char *) malloc(strlen(name) + 1);
+    TTreeNode *node_ptr = (TTreeNode *) mymalloc(sizeof(TTreeNode));
+    node_ptr->name = (char *) mymalloc(strlen(name) + 1);
     strcpy(node_ptr->name, name);
     strncpy(node_ptr->phoneNum, phoneNum, 9);
     node_ptr->left = NULL;
@@ -168,8 +169,8 @@ void addNode(TTreeNode **root, TTreeNode *newNode) {
 
 void freenode(TTreeNode *node) {
     char *name = node->name;
-    free(name);
-    free(node);
+    myfree(name);
+    myfree(node);
 }
 
 void print_inorder(TTreeNode *node) {

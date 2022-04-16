@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "../mymalloc.h"
-#include "../llist.h"
+#include "mymalloc.h"
+#include "llist.h"
 
 
 char _heap[MEMSIZE] = {0};
